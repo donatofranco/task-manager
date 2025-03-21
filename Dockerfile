@@ -10,6 +10,9 @@ COPY package*.json ./
 # Instalamos las dependencias
 RUN npm install
 
+# Generamos el cliente de Prisma
+RUN npx prisma generate
+
 # Copiamos el resto del código
 COPY . .
 
