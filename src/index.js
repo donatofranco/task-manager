@@ -8,7 +8,8 @@ const errorHandler = require('./middlewares/errorHandler');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3030;
+const PORT = process.env.PORT || 4000;
+const HOST = '0.0.0.0';
 
 // Middlewares
 app.use(express.json()); // Parsear JSON en los body requests
@@ -22,6 +23,6 @@ app.get('/', (req, res) => {
 });
 
 // Levantar servidor
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Servidor corriendo en http://${HOST}:${PORT}`);
 });
