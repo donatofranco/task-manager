@@ -16,8 +16,15 @@ COPY . .
 # Generamos el cliente de Prisma
 RUN npx prisma generate
 
+# Copiar el entrypoint script
+COPY entrypoint.sh ./
+
+# Asegurar que tiene permisos de ejecución (en el contenedor)
+RUN chmod +x ./entrypoint.sh
+
 # Expone el puerto que usa la app
 EXPOSE 4000
 
 # Comando para arrancar la app
-CMD ["npm", "start"]
+# Usar el script como entrypoint
+ENTRYPOINT ["./entrypoint.sh"]
