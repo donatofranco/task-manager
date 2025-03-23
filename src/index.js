@@ -13,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
 const corsOptions = {
-  origin: ['http://localhost:3001'], // frontend
+  origin: ['http://localhost:3001','https://task-manager-front-chi.vercel.app'], // frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   // credentials: true, // si necesitás enviar cookies o headers de autenticación
