@@ -10,7 +10,12 @@ const authenticateToken = (req, res, next) => {
   if (!token) return res.status(401).json({ error: 'Token malformado' });
 
   jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ error: 'Token inválido' });
+    if (err) {
+        if (err.name === 'TokenExpiredError') {
+          return res.status(401).json({ error: 'Token expirado' });
+        }
+        return res.status(403).json({ error: 'Token inválido. ' + err.name });
+    }
     console.log(user.userId);
     req.user = user; // Ahora req.user tiene el payload del token (por ejemplo, el userId)
     req.user.id = user.userId
