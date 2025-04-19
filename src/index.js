@@ -5,6 +5,9 @@ const taskRoutes = require('./routes/task');
 const errorHandler = require('./middlewares/errorHandler');
 const helmet = require('helmet');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./openapi.yaml');
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -25,6 +28,7 @@ const corsOptions = {
 app.use(helmet()); // Agrega headers de seguridad
 app.use(cors(corsOptions));  // Controla quién puede hacer requests a tu API
 app.use(express.json()); // Parsear JSON en los body requests
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //Swagger UI
 app.use('/api/users', userRoutes);  // Rutas de usuarios
 app.use('/api/tasks', taskRoutes);
 app.use(errorHandler); // Manejo global de errores

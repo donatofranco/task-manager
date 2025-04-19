@@ -1,0 +1,431 @@
+openapi: 3.0.3
+info:
+  title: Task Manager API
+  description: API para gestionar tareas con autenticación de usuarios
+  version: 1.0.0
+  contact:
+    email: tu_email@ejemplo.com
+servers:
+  - url: 'http://localhost:3000'
+    description: Servidor local de desarrollo
+tags:
+  - name: Usuarios
+    description: Operaciones relacionadas con usuarios
+  - name: Tareas
+    description: Operaciones relacionadas con tareas
+
+paths:
+  /api/users/register:
+    post:
+      tags:
+        - Usuarios
+      summary: Registrar un nuevo usuario
+      description: Crea un nuevo usuario en el sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Usuario registrado
+                  user:
+                    $ref: '#/components/schemas/User'
+        '400':
+          description: Datos inválidos o usuario ya existente
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Usuario ya registrado
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/users/login:
+    post:
+      tags:
+        - Usuarios
+      summary: Iniciar sesión
+      description: Autentica a un usuario y devuelve un token JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login exitoso
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '400':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ValidationError'
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Usuario no encontrado
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/tasks:
+    post:
+      tags:
+        - Tareas
+      summary: Crear una nueva tarea
+      description: Crea una nueva tarea asociada al usuario autenticado
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: Tarea creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+          
+    get:
+      tags:
+        - Tareas
+      summary: Obtener todas las tareas
+      description: Obtiene todas las tareas del usuario autenticado
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/tasks/{id}:
+    get:
+      tags:
+        - Tareas
+      summary: Obtener tarea por ID
+      description: Obtiene una tarea específica del usuario autenticado
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la tarea
+      responses:
+        '200':
+          description: Tarea encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Tarea no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Tarea no encontrada
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    put:
+      tags:
+        - Tareas
+      summary: Actualizar tarea
+      description: Actualiza una tarea específica del usuario autenticado
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la tarea
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: Tarea actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Tarea no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Tarea no encontrada
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      tags:
+        - Tareas
+      summary: Eliminar tarea
+      description: Elimina una tarea específica del usuario autenticado
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la tarea
+      responses:
+        '200':
+          description: Tarea eliminada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Tarea eliminada correctamente
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: Tarea no encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Tarea no encontrada
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      
+  schemas:
+    UserRegistration:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: usuario@example.com
+        password:
+          type: string
+          format: password
+          minLength: 6
+          example: contraseña123
+          
+    UserLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: usuario@example.com
+        password:
+          type: string
+          format: password
+          example: contraseña123
+          
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: usuario@example.com
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-01-01T12:00:00Z'
+          
+    TaskCreate:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          example: Completar informe
+        description:
+          type: string
+          example: Terminar el informe trimestral para la reunión del lunes
+          
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Completar informe
+        description:
+          type: string
+          example: Terminar el informe trimestral para la reunión del martes
+        completed:
+          type: boolean
+          example: true
+          
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Completar informe
+        description:
+          type: string
+          example: Terminar el informe trimestral para la reunión del lunes
+        completed:
+          type: boolean
+          example: false
+        createdAt:
+          type: string
+          format: date-time
+          example: '2023-01-01T12:00:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2023-01-01T12:00:00Z'
+        userId:
+          type: integer
+          example: 1
+          
+    ValidationError:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              msg:
+                type: string
+                example: Debe ser un email válido
+              param:
+                type: string
+                example: email
+              location:
+                type: string
+                example: body
+  
+  responses:
+    Unauthorized:
+      description: No autorizado - token no proporcionado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: No token provided
+    
+    Forbidden:
+      description: Prohibido - token inválido o expirado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Token inválido
+
+    ServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Error interno del servidor
