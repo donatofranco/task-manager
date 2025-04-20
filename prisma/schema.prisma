@@ -15,11 +15,24 @@ datasource db {
 
 //Definimos el modelo de usuario
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  tasks     Task[]   // Aquí agregas la relación inversa a Task
+  id         Int        @id @default(autoincrement())
+  email      String     @unique
+  password   String
+  createdAt  DateTime   @default(now())
+  tasks      Task[]     // Aquí agregas la relación inversa a Task
+  categories Category[] // Relación inversa a Category
+}
+
+//Definimos el modelo para las categorías
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String
+  color       String?   // Opcional: para asignar colores a las categorías
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  tasks       Task[]
 }
 
 //Definimos el modelo para la tarea
@@ -36,4 +49,7 @@ model Task {
 
   user        User     @relation(fields: [userId], references: [id])
   userId      Int
+  
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/user');
 const taskRoutes = require('./routes/task');
+const categoryRoutes = require('./routes/category');
 const errorHandler = require('./middlewares/errorHandler');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -30,7 +31,8 @@ app.use(cors(corsOptions));  // Controla quién puede hacer requests a tu API
 app.use(express.json()); // Parsear JSON en los body requests
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument)); //Swagger UI
 app.use('/api/users', userRoutes);  // Rutas de usuarios
-app.use('/api/tasks', taskRoutes);
+app.use('/api/tasks', taskRoutes);  // Rutas de tareas
+app.use('/api/categories', categoryRoutes);  // Rutas de categorías
 app.use(errorHandler); // Manejo global de errores
 
 // Rutas base
