@@ -21,6 +21,7 @@ paths:
     post:
       tags:
         - Usuarios
+      operationId: registerUser
       summary: Registrar un nuevo usuario
       description: Crea un nuevo usuario en el sistema
       requestBody:
@@ -61,6 +62,7 @@ paths:
     post:
       tags:
         - Usuarios
+      operationId: loginUser
       summary: Iniciar sesión
       description: Autentica a un usuario y devuelve un token JWT
       requestBody:
@@ -102,6 +104,7 @@ paths:
     post:
       tags:
         - Tareas
+      operationId: createTask
       summary: Crear una nueva tarea
       description: Crea una nueva tarea asociada al usuario autenticado
       security:
@@ -129,6 +132,7 @@ paths:
     get:
       tags:
         - Tareas
+      operationId: getTasks
       summary: Obtener todas las tareas
       description: Obtiene todas las tareas del usuario autenticado
       security:
@@ -153,6 +157,7 @@ paths:
     get:
       tags:
         - Tareas
+      operationId: getTaskById
       summary: Obtener tarea por ID
       description: Obtiene una tarea específica del usuario autenticado
       security:
@@ -191,6 +196,7 @@ paths:
     put:
       tags:
         - Tareas
+      operationId: updateTask
       summary: Actualizar tarea
       description: Actualiza una tarea específica del usuario autenticado
       security:
@@ -235,6 +241,7 @@ paths:
     delete:
       tags:
         - Tareas
+      operationId: deleteTask
       summary: Eliminar tarea
       description: Elimina una tarea específica del usuario autenticado
       security:
@@ -278,6 +285,7 @@ paths:
     post:
       tags:
         - Categorías
+      operationId: createCategory
       summary: Crear una nueva categoría
       description: Crea una nueva categoría asociada al usuario autenticado
       security:
@@ -314,6 +322,7 @@ paths:
     get:
       tags:
         - Categorías
+      operationId: getCategories
       summary: Obtener todas las categorías
       description: Obtiene todas las categorías del usuario autenticado
       security:
@@ -336,6 +345,7 @@ paths:
     get:
       tags:
         - Categorías
+      operationId: getCategoryById
       summary: Obtener categoría por ID
       description: Obtiene una categoría específica del usuario autenticado
       security:
@@ -371,6 +381,7 @@ paths:
     put:
       tags:
         - Categorías
+      operationId: updateCategory
       summary: Actualizar categoría
       description: Actualiza una categoría específica del usuario autenticado
       security:
@@ -412,6 +423,7 @@ paths:
     delete:
       tags:
         - Categorías
+      operationId: deleteCategory
       summary: Eliminar categoría
       description: Elimina una categoría específica del usuario autenticado
       security:
